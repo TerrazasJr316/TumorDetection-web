@@ -101,14 +101,7 @@ button:active { transform: scale(0.98); }
 #pred-resnet { color: #c0392b; } /* Rojo oscuro */
 #pred-alexnet { color: #d35400; } /* Naranja */
 
-/* Grid de las 3 Tomas */
-.tomas-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 30px;
-    justify-items: center;
-}
-
+/* Hacemos la tarjeta contenedora más ancha */
 .toma-card {
     background: var(--card-bg);
     padding: 20px;
@@ -116,38 +109,40 @@ button:active { transform: scale(0.98); }
     box-shadow: 0 5px 15px rgba(0,0,0,0.08);
     text-align: center;
     transition: transform 0.3s ease;
+    
+    /* ANTES: max-width: 300px */
+    /* AHORA: Ocupará todo el espacio posible hasta 500px */
     width: 100%;
-    max-width: 300px;
+    max-width: 500px; 
 }
 
-.toma-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-}
-
-.toma-card h3 {
-    color: var(--primary);
-    margin-bottom: 15px;
-    font-size: 1.1rem;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-}
-
+/* Configuramos el canvas para que se estire al 100% de la tarjeta */
 canvas {
     background-color: #000;
     border: 2px solid #333;
     border-radius: 4px;
-    margin-bottom: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    margin-bottom: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 
-    /* AQUÍ ESTÁ EL CAMBIO VISUAL */
-    width: 100% !important;       /* Ocupa todo el ancho de la tarjeta */
-    max-width: 350px !important;  /* Pero no más de 350px para que no sea grotesco */
-    height: auto !important;      /* La altura se ajusta automática para ser cuadrado */
-    aspect-ratio: 1 / 1;          /* Fuerza a que sea siempre cuadrado */
+    /* ESTO ES LA CLAVE DEL TAMAÑO VISUAL */
+    width: 100% !important;  /* Ocupa todo el ancho de la tarjeta */
+    height: auto !important; /* La altura se ajusta sola */
+    aspect-ratio: 1 / 1;     /* Fuerza a que sea cuadrado perfecto */
 
-    /* Esto hace que al estirarse no se vea borroso, sino nítido (cuadritos) */
+    /* Truco para que al estirarse se vea nítido (como pixel art) y no borroso */
     image-rendering: pixelated; 
+    image-rendering: -moz-crisp-edges;
+}
+
+/* Opcional: Ajustar el Grid para que las tarjetas sean más grandes */
+.tomas-grid {
+    display: grid;
+    /* Aumentamos el minmax de 250px a 350px para forzar tarjetas grandes */
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+    gap: 40px;
+    justify-items: center;
+    width: 100%;
+    padding: 0 20px;
 }
 
 /* Utilidades */

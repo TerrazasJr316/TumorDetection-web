@@ -71,17 +71,15 @@ function renderTomas(data) {
 }
 
 function drawToCanvas(ctx, mriData, maskData, mode) {
-    // 1. DETECTAR EL TAMAÑO REAL DE LOS DATOS (64, 96, o 128)
-    // Si hay mriData, usamos su longitud. Si no, la de la máscara.
-    const size = mriData ? mriData.length : maskData.length;
+    // 1. Detectar tamaño REAL de los datos (64, 96, 128...)
+    const size = mriData ? mriData.length : (maskData ? maskData.length : 64);
 
-    // 2. ¡TRUCO DE MAGIA! 
-    // Ajustamos la resolución interna del canvas al tamaño exacto de los píxeles.
-    // Esto elimina el espacio blanco sobrante.
+    // 2. FORZAR la resolución interna para que coincida con los datos
+    // Esto elimina el espacio blanco sobrante. La imagen llenará todo el buffer.
     ctx.canvas.width = size;
     ctx.canvas.height = size;
 
-    // --- A partir de aquí es tu código normal ---
+    // 3. Dibujar los datos (esto ya lo tenías, pero ahora llenará el canvas)
     const imgData = ctx.createImageData(size, size);
     const pixels = imgData.data;
 
@@ -92,9 +90,15 @@ function drawToCanvas(ctx, mriData, maskData, mode) {
             let gray = 0;
             let maskVal = 0;
 
-            if (mriData) gray = mriData[y][x];
-            if (maskData) maskVal = maskData[y][x];
+            // Obtener valores de forma segura
+            if (mriData && mriData[y] && mriData[y][x] !== undefined) {
+                gray = Array.isArray(mriData[y][x]) ? mriData[y][x][0] : mriData[y][x];
+            }
+            if (maskData && maskData[y] && maskData[y][x] !== undefined) {
+                maskVal = maskData[y][x];
+            }
 
+            // Lógica de coloreado
             if (mode === 'mri') {
                 pixels[i] = gray; pixels[i+1] = gray; pixels[i+2] = gray; pixels[i+3] = 255;
             } 
@@ -113,6 +117,7 @@ function drawToCanvas(ctx, mriData, maskData, mode) {
     }
     ctx.putImageData(imgData, 0, 0);
 }
+
 // Manejo de errores y carga
 function showLoading() {
     loading.classList.remove('hidden');
