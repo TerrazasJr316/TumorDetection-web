@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+.env
+db.sqlite3
+/static/
+/media/
+
+# Anaconda
+.conda/
+data_from_release.pkl
+load_release_to_mongo.py
+mri_dataset_with_preds.pkl
+requirements_loader.txt
+requirements_local_training.txt
+requirements_preprocessing.txt.txt
+train_and_save_artifacts.py
