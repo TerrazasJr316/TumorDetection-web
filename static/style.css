@@ -134,15 +134,19 @@ button:active { transform: scale(0.98); }
 }
 
 canvas {
-    background-color: #000; /* Fondo negro para MRI */
-    border: 3px solid #eee;
+    background-color: #000;
+    border: 2px solid #333;
     border-radius: 4px;
     margin-bottom: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    /* ORIGINAL: width: 192px !important; height: 192px !important; */
-    /* NUEVO: ¡Aumentamos el tamaño! Por ejemplo, 256px es 64*4 */
-    width: 320px !important; 
-    height: 320px !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+
+    /* AQUÍ ESTÁ EL CAMBIO VISUAL */
+    width: 100% !important;       /* Ocupa todo el ancho de la tarjeta */
+    max-width: 350px !important;  /* Pero no más de 350px para que no sea grotesco */
+    height: auto !important;      /* La altura se ajusta automática para ser cuadrado */
+    aspect-ratio: 1 / 1;          /* Fuerza a que sea siempre cuadrado */
+
+    /* Esto hace que al estirarse no se vea borroso, sino nítido (cuadritos) */
     image-rendering: pixelated; 
 }
 

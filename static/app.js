@@ -71,14 +71,23 @@ function renderTomas(data) {
 }
 
 function drawToCanvas(ctx, mriData, maskData, mode) {
-    const width = 64;
-    const height = 64;
-    const imgData = ctx.createImageData(width, height);
+    // 1. DETECTAR EL TAMAÑO REAL DE LOS DATOS (64, 96, o 128)
+    // Si hay mriData, usamos su longitud. Si no, la de la máscara.
+    const size = mriData ? mriData.length : maskData.length;
+
+    // 2. ¡TRUCO DE MAGIA! 
+    // Ajustamos la resolución interna del canvas al tamaño exacto de los píxeles.
+    // Esto elimina el espacio blanco sobrante.
+    ctx.canvas.width = size;
+    ctx.canvas.height = size;
+
+    // --- A partir de aquí es tu código normal ---
+    const imgData = ctx.createImageData(size, size);
     const pixels = imgData.data;
 
-    for (let y = 0; y < height; y++) {
-        for (let x = 0; x < width; x++) {
-            const i = (y * width + x) * 4;
+    for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+            const i = (y * size + x) * 4;
             
             let gray = 0;
             let maskVal = 0;
@@ -87,32 +96,17 @@ function drawToCanvas(ctx, mriData, maskData, mode) {
             if (maskData) maskVal = maskData[y][x];
 
             if (mode === 'mri') {
-                // Escala de grises simple
-                pixels[i] = gray;     // R
-                pixels[i+1] = gray;   // G
-                pixels[i+2] = gray;   // B
-                pixels[i+3] = 255;    // Alpha
+                pixels[i] = gray; pixels[i+1] = gray; pixels[i+2] = gray; pixels[i+3] = 255;
             } 
             else if (mode === 'mask') {
-                // Blanco sobre negro
                 const val = maskVal > 127 ? 255 : 0;
-                pixels[i] = val;
-                pixels[i+1] = val;
-                pixels[i+2] = val;
-                pixels[i+3] = 255;
+                pixels[i] = val; pixels[i+1] = val; pixels[i+2] = val; pixels[i+3] = 255;
             } 
             else if (mode === 'overlay') {
-                // Si hay máscara, pintar ROJO, si no, pintar la MRI normal
                 if (maskVal > 127) {
-                    pixels[i] = 255;  // R (Rojo a tope)
-                    pixels[i+1] = 0;  // G
-                    pixels[i+2] = 0;  // B
-                    pixels[i+3] = 255;
+                    pixels[i] = 255; pixels[i+1] = 0; pixels[i+2] = 0; pixels[i+3] = 255;
                 } else {
-                    pixels[i] = gray;
-                    pixels[i+1] = gray;
-                    pixels[i+2] = gray;
-                    pixels[i+3] = 255;
+                    pixels[i] = gray; pixels[i+1] = gray; pixels[i+2] = gray; pixels[i+3] = 255;
                 }
             }
         }
