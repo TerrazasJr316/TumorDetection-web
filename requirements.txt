@@ -1,6 +1,7 @@
 django
 djangorestframework
-gunicorn                 # Para el despliegue en Render
-python-dotenv            # Para variables de entorno
-pymongo[srv]             # Para conectar a Mongo Atlas
+gunicorn
+python-dotenv
+pymongo[srv]
 certifi
+whitenoise
