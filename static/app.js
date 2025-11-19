@@ -72,7 +72,7 @@ function renderTomas(data) {
 
 function drawToCanvas(ctx, mriData, maskData, mode) {
     // 1. Detectar tamaño REAL de los datos (64, 96, 128...)
-    const size = mriData ? mriData.length : (maskData ? maskData.length : 64);
+    const size = mriData ? mriData.length : (maskData ? maskData.length : 128);
 
     // 2. FORZAR la resolución interna para que coincida con los datos
     // Esto elimina el espacio blanco sobrante. La imagen llenará todo el buffer.

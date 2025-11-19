@@ -125,8 +125,8 @@ canvas {
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 
     /* ESTO ES LA CLAVE DEL TAMAÑO VISUAL */
-    width: 300px !important;  /* Ocupa todo el ancho de la tarjeta */
-    height: 300px !important; /* La altura se ajusta sola */
+    width: 100% !important;  /* Ocupa todo el ancho de la tarjeta */
+    height: 500px !important; /* La altura se ajusta sola */
     aspect-ratio: 1 / 1;     /* Fuerza a que sea cuadrado perfecto */
 
     /* Truco para que al estirarse se vea nítido (como pixel art) y no borroso */
