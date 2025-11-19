@@ -1,5 +1,5 @@
 // CAMBIAR ESTO POR TU URL DE RENDER AL DESPLEGAR
-const API_BASE_URL = 'https://tumordetection-mri-web.onrender.com'; 
+const API_BASE_URL = 'https://tumordetection-web.onrender.com';
 // const API_BASE_URL = 'http://127.0.0.1:8000'; // Local
 
 const btnSearch = document.getElementById('btn-search');
