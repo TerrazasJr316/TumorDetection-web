@@ -125,8 +125,8 @@ canvas {
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 
     /* ESTO ES LA CLAVE DEL TAMAÑO VISUAL */
-    width: 100% !important;  /* Ocupa todo el ancho de la tarjeta */
-    height: auto !important; /* La altura se ajusta sola */
+    width: 300px !important;  /* Ocupa todo el ancho de la tarjeta */
+    height: 300px !important; /* La altura se ajusta sola */
     aspect-ratio: 1 / 1;     /* Fuerza a que sea cuadrado perfecto */
 
     /* Truco para que al estirarse se vea nítido (como pixel art) y no borroso */
@@ -139,9 +139,9 @@ canvas {
     display: grid;
     /* Aumentamos el minmax de 250px a 350px para forzar tarjetas grandes */
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
-    gap: 40px;
+    gap: 100px;
     justify-items: center;
-    width: 100%;
+    width: 100px;
     padding: 0 20px;
 }
 
