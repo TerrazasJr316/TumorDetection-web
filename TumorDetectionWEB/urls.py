@@ -14,10 +14,14 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
+from django.http import HttpResponse # <--- Agrega esto arriba
 from django.urls import path, include
 
+# Crea una vista simple
+def home(request):
+    return HttpResponse("<h1>🚀 API de Detección de Tumores Activa</h1><p>Usa el frontend local para interactuar.</p>")
+
 urlpatterns = [
-    # path('admin/', admin.site.urls), # Deshabilitado, no lo usamos
-    path('api/', include('api.urls')), # Conectar las URLs de nuestra app
+    path('', home), # <--- Agrega esta ruta para la raíz
+    path('api/', include('api.urls')),
 ]
