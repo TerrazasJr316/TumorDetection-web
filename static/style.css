@@ -1,82 +1,74 @@
-/* Reset y Base */
+/* RESET */
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    background-color: #f0f2f5;
-    color: #1c1e21;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+body { font-family: sans-serif; background: #f4f7f6; padding: 20px; display: flex; flex-direction: column; align-items: center; }
 
-header { text-align: center; margin-bottom: 30px; }
-header h1 { color: #1877f2; margin-bottom: 5px; }
+header { text-align: center; margin-bottom: 20px; }
+h1 { color: #2c3e50; margin-bottom: 5px; }
 
-/* Controles */
-.search-container { margin-bottom: 30px; display: flex; gap: 10px; }
-input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
-button { padding: 10px 20px; background: #1877f2; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
-button:hover { background: #166fe5; }
-.secondary { background: #4b4c4f; }
+/* CONTROLES */
+.controls { display: flex; gap: 10px; margin-bottom: 20px; }
+input { padding: 10px; border-radius: 5px; border: 1px solid #ccc; width: 150px; }
+button { padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+button:hover { background: #2980b9; }
+.secondary { background: #7f8c8d; }
 
-/* Estructura de Modelos (LAS FILAS) */
-.model-section {
+/* MENSAJES */
+.hidden { display: none !important; }
+#status-msg { font-size: 1.2rem; color: #e67e22; font-weight: bold; margin: 20px; }
+#error-box { background: #fadbd8; color: #c0392b; padding: 10px; border-radius: 5px; margin: 10px; }
+#patient-lbl { margin-bottom: 20px; color: #34495e; }
+
+/* ESTILO DE LA FILA (MODELO) */
+.model-row {
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    padding: 25px;
-    margin-bottom: 30px; /* Separación entre modelos */
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    padding: 20px;
     width: 100%;
-    max-width: 1000px;
-    border-left: 6px solid #1877f2; /* Borde decorativo */
+    max-width: 1000px; /* Ancho máximo para que no se desparrame */
 }
 
-.model-header {
+.row-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 2px solid #ecf0f1;
     padding-bottom: 10px;
+    margin-bottom: 15px;
 }
 
-.model-title { font-size: 1.5rem; font-weight: bold; color: #333; }
-.model-score { 
-    font-size: 1.2rem; 
-    font-weight: bold; 
-    color: #2e7d32; /* Verde éxito */
-    background: #e8f5e9; 
-    padding: 5px 15px; 
-    border-radius: 20px; 
-}
+.m-name { font-size: 1.5rem; font-weight: bold; color: #2c3e50; }
+.m-score { font-size: 1.2rem; font-weight: bold; color: #27ae60; background: #eafaf1; padding: 5px 15px; border-radius: 15px; }
 
-/* Contenedor de las 3 tarjetas */
-.cards-container {
-    display: flex;
+/* CUERPO DE LA FILA (LAS 3 TARJETAS) */
+.row-body {
+    display: flex;           /* ESTO PONE LAS TARJETAS EN FILA */
     justify-content: space-between;
     gap: 20px;
-    flex-wrap: wrap;
 }
 
-/* Tarjetas individuales */
-.toma-card {
-    flex: 1;
-    min-width: 250px;
-    text-align: center;
-}
-.toma-card h4 { margin-bottom: 10px; color: #555; }
-
-/* EL LIENZO GRANDE */
-canvas {
-    width: 100%;
-    aspect-ratio: 1/1;
-    background: #000;
-    border: 2px solid #eee;
+.card {
+    flex: 1;                 /* TODAS DEL MISMO TAMAÑO */
+    background: #f8f9fa;
+    padding: 10px;
     border-radius: 8px;
-    image-rendering: pixelated; /* Clave para la nitidez */
+    text-align: center;
+    border: 1px solid #ddd;
 }
 
-/* Utilidades */
-.hidden { display: none; }
-#error-msg { color: red; font-weight: bold; margin: 20px 0; }
+.card span { display: block; margin-bottom: 8px; font-weight: bold; color: #7f8c8d; }
+
+/* EL LIENZO GIGANTE */
+canvas {
+    width: 100%;             /* OCUPAR TODO EL ANCHO DE LA TARJETA */
+    aspect-ratio: 1 / 1;     /* SIEMPRE CUADRADO */
+    background: black;
+    border-radius: 4px;
+    image-rendering: pixelated; /* CLAVE PARA NITIDEZ */
+}
+
+/* PARA MÓVILES */
+@media (max-width: 768px) {
+    .row-body { flex-direction: column; } /* En celular se ponen verticales */
+}

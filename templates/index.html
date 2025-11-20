@@ -4,87 +4,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detección de Tumores - Multi-Modelo</title>
+    <title>Detección de Tumores - Comparativa</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
 
     <header>
         <h1>Detección de Tumores por MRI</h1>
-        <p>Análisis entre 3 modelos de CNN</p>
+        <p>Análisis Comparativo: ResNet50 vs AlexNet vs ResNet18</p>
     </header>
 
-    <div class="search-container">
-        <input type="number" id="image-id-input" placeholder="Ej: 623" min="0" max="3928">
-        <button id="btn-search">Analizar MRI</button>
-        <button id="btn-random" class="secondary">Aleatorio</button>
+    <div class="controls">
+        <input type="number" id="inp-id" placeholder="ID (Ej: 623)" min="0" max="3928">
+        <button id="btn-run">Analizar MRI</button>
+        <button id="btn-rand" class="secondary">Aleatorio</button>
     </div>
 
-    <h2 id="patient-info" class="hidden">Paciente: --</h2>
-    <div id="loading" class="hidden">Cargando predicciones...</div>
-    <div id="error-msg" class="hidden"></div>
+    <div id="status-msg" class="hidden">Cargando...</div>
+    <div id="error-box" class="hidden"></div>
+    <h2 id="patient-lbl" class="hidden">Paciente: --</h2>
 
-    <div id="results-area" class="hidden">
+    <div id="main-results" class="hidden">
 
-        <div class="model-section">
-            <div class="model-header">
-                <span class="model-title">ResNet50</span>
-                <span class="model-score" id="acc-resnet50">Prob: --%</span>
+        <div class="model-row">
+            <div class="row-header">
+                <span class="m-name">ResNet50</span>
+                <span class="m-score" id="score-r50">--%</span>
             </div>
-            <div class="cards-container">
-                <div class="toma-card">
-                    <h4>Vista General</h4>
-                    <canvas id="c-r50-mri"></canvas>
+            <div class="row-body">
+                <div class="card">
+                    <span>General</span>
+                    <canvas id="cv-r50-mri"></canvas>
                 </div>
-                <div class="toma-card">
-                    <h4>Segmentación</h4>
-                    <canvas id="c-r50-mask"></canvas>
+                <div class="card">
+                    <span>Segmentación</span>
+                    <canvas id="cv-r50-mask"></canvas>
                 </div>
-                <div class="toma-card">
-                    <h4>Diagnóstico</h4>
-                    <canvas id="c-r50-overlay"></canvas>
+                <div class="card">
+                    <span>Diagnóstico</span>
+                    <canvas id="cv-r50-over"></canvas>
                 </div>
             </div>
         </div>
 
-        <div class="model-section">
-            <div class="model-header">
-                <span class="model-title">AlexNet</span>
-                <span class="model-score" id="acc-alexnet">Prob: --%</span>
+        <div class="model-row">
+            <div class="row-header">
+                <span class="m-name">AlexNet</span>
+                <span class="m-score" id="score-alex">--%</span>
             </div>
-            <div class="cards-container">
-                <div class="toma-card">
-                    <h4>Vista General</h4>
-                    <canvas id="c-alex-mri"></canvas>
+            <div class="row-body">
+                <div class="card">
+                    <span>General</span>
+                    <canvas id="cv-alex-mri"></canvas>
                 </div>
-                <div class="toma-card">
-                    <h4>Segmentación</h4>
-                    <canvas id="c-alex-mask"></canvas>
+                <div class="card">
+                    <span>Segmentación</span>
+                    <canvas id="cv-alex-mask"></canvas>
                 </div>
-                <div class="toma-card">
-                    <h4>Diagnóstico</h4>
-                    <canvas id="c-alex-overlay"></canvas>
+                <div class="card">
+                    <span>Diagnóstico</span>
+                    <canvas id="cv-alex-over"></canvas>
                 </div>
             </div>
         </div>
 
-        <div class="model-section">
-            <div class="model-header">
-                <span class="model-title">ResNet18</span>
-                <span class="model-score" id="acc-resnet18">Prob: --%</span>
+        <div class="model-row">
+            <div class="row-header">
+                <span class="m-name">ResNet18</span>
+                <span class="m-score" id="score-r18">--%</span>
             </div>
-            <div class="cards-container">
-                <div class="toma-card">
-                    <h4>Vista General</h4>
-                    <canvas id="c-r18-mri"></canvas>
+            <div class="row-body">
+                <div class="card">
+                    <span>General</span>
+                    <canvas id="cv-r18-mri"></canvas>
                 </div>
-                <div class="toma-card">
-                    <h4>Segmentación</h4>
-                    <canvas id="c-r18-mask"></canvas>
+                <div class="card">
+                    <span>Segmentación</span>
+                    <canvas id="cv-r18-mask"></canvas>
                 </div>
-                <div class="toma-card">
-                    <h4>Diagnóstico</h4>
-                    <canvas id="c-r18-overlay"></canvas>
+                <div class="card">
+                    <span>Diagnóstico</span>
+                    <canvas id="cv-r18-over"></canvas>
                 </div>
             </div>
         </div>

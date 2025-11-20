@@ -1,122 +1,115 @@
-const API_BASE_URL = window.location.origin;
+const API_URL = window.location.origin;
 
-const btnSearch = document.getElementById('btn-search');
-const btnRandom = document.getElementById('btn-random');
-const inputId = document.getElementById('image-id-input');
-const resultsArea = document.getElementById('results-area');
-const loading = document.getElementById('loading');
-const errorMsg = document.getElementById('error-msg');
-const patientInfo = document.getElementById('patient-info');
+const inpId = document.getElementById('inp-id');
+const btnRun = document.getElementById('btn-run');
+const btnRand = document.getElementById('btn-rand');
+const mainDiv = document.getElementById('main-results');
+const statusMsg = document.getElementById('status-msg');
+const errorBox = document.getElementById('error-box');
+const patLbl = document.getElementById('patient-lbl');
 
-// Listeners
-btnSearch.addEventListener('click', () => {
-    const id = inputId.value;
-    if (!id) return alert("Ingresa un ID");
-    fetchData(`/api/image/index/${id}/`);
+btnRun.addEventListener('click', () => {
+    if(!inpId.value) return alert("Ingresa ID");
+    loadData(`/api/image/index/${inpId.value}/`);
 });
 
-btnRandom.addEventListener('click', () => {
-    fetchData(`/api/images/random/1/`, true);
-});
+btnRand.addEventListener('click', () => loadData(`/api/images/random/1/`));
 
-async function fetchData(endpoint) {
-    showLoading();
+async function loadData(url) {
+    // Reset UI
+    statusMsg.classList.remove('hidden');
+    mainDiv.classList.add('hidden');
+    errorBox.classList.add('hidden');
+    patLbl.classList.add('hidden');
+
     try {
-        const response = await fetch(`${API_BASE_URL}${endpoint}`);
-        if (!response.ok) throw new Error("Error al cargar datos (ID incorrecto o fallo de red)");
+        const res = await fetch(`${API_URL}${url}`);
+        if(!res.ok) throw new Error("Error de red o ID no encontrado");
         
-        let data = await response.json();
-        if (Array.isArray(data)) data = data[0];
-        
-        renderAllModels(data);
-    } catch (error) {
-        showError(error.message);
+        let data = await res.json();
+        if(Array.isArray(data)) data = data[0];
+
+        display(data);
+    } catch (e) {
+        statusMsg.classList.add('hidden');
+        errorBox.textContent = e.message;
+        errorBox.classList.remove('hidden');
     }
 }
 
-function renderAllModels(data) {
-    // 1. Mostrar el contenedor
-    loading.classList.add('hidden');
-    errorMsg.classList.add('hidden');
-    resultsArea.classList.remove('hidden');
-    patientInfo.classList.remove('hidden');
-    
-    patientInfo.textContent = `Paciente: ${data.patient_id || 'Desconocido'}`;
+function display(data) {
+    statusMsg.classList.add('hidden');
+    mainDiv.classList.remove('hidden');
+    patLbl.classList.remove('hidden');
+    patLbl.textContent = `Paciente: ${data.patient_id}`;
 
-    // 2. Actualizar Probabilidades (Scores)
-    // Usamos verificaciones de seguridad (?) para evitar el error "Cannot read property"
-    const pR50 = data.prediction_resnet50 ? (data.prediction_resnet50['1'] * 100).toFixed(2) + '%' : 'N/A';
-    const pAlex = data.prediction_alexnet ? (data.prediction_alexnet['1'] * 100).toFixed(2) + '%' : 'N/A';
-    const pR18 = data.prediction_resnet18 ? (data.prediction_resnet18['1'] * 100).toFixed(2) + '%' : 'Pendiente...';
+    // --- 1. PINTAR PORCENTAJES (Con chequeo de seguridad) ---
+    setScore('score-r50', data.prediction_resnet50);
+    setScore('score-alex', data.prediction_alexnet);
+    setScore('score-r18', data.prediction_resnet18);
 
-    // Evitamos el error "Set property of null" verificando que el elemento exista
-    if(document.getElementById('acc-resnet50')) document.getElementById('acc-resnet50').textContent = `${pR50} Tumor`;
-    if(document.getElementById('acc-alexnet')) document.getElementById('acc-alexnet').textContent = `${pAlex} Tumor`;
-    if(document.getElementById('acc-resnet18')) document.getElementById('acc-resnet18').textContent = `${pR18} Tumor`;
-
-    // 3. Dibujar Imágenes (Reutilizamos las mismas imágenes de 64x64 para todos los modelos)
-    // Fila ResNet50
-    drawSet('c-r50', data.mri_image_64x64, data.mask_image_64x64);
-    // Fila AlexNet
-    drawSet('c-alex', data.mri_image_64x64, data.mask_image_64x64);
-    // Fila ResNet18
-    drawSet('c-r18', data.mri_image_64x64, data.mask_image_64x64);
+    // --- 2. PINTAR IMÁGENES (Usamos la misma imagen base para todos) ---
+    // ResNet50
+    paintRow('cv-r50', data.mri_image_64x64, data.mask_image_64x64);
+    // AlexNet
+    paintRow('cv-alex', data.mri_image_64x64, data.mask_image_64x64);
+    // ResNet18
+    paintRow('cv-r18', data.mri_image_64x64, data.mask_image_64x64);
 }
 
-function drawSet(prefix, mri, mask) {
-    const c1 = document.getElementById(`${prefix}-mri`);
-    const c2 = document.getElementById(`${prefix}-mask`);
-    const c3 = document.getElementById(`${prefix}-overlay`);
+function setScore(elemId, predObj) {
+    const el = document.getElementById(elemId);
+    if(!el) return; // Seguridad anti-error
 
-    if(c1) drawToCanvas(c1.getContext('2d'), mri, null, 'mri');
-    if(c2) drawToCanvas(c2.getContext('2d'), null, mask, 'mask');
-    if(c3) drawToCanvas(c3.getContext('2d'), mri, mask, 'overlay');
+    if(predObj) {
+        const pct = (predObj['1'] * 100).toFixed(2);
+        el.textContent = `${pct}% Tumor`;
+        el.style.color = pct > 50 ? '#c0392b' : '#27ae60'; // Rojo si es alto, verde si es bajo
+    } else {
+        el.textContent = "Pendiente...";
+        el.style.color = 'orange';
+    }
 }
 
-function drawToCanvas(ctx, mriData, maskData, mode) {
-    // Ajuste automático de tamaño para que se vea GRANDE y nítido
-    const size = mriData ? mriData.length : (maskData ? maskData.length : 64);
-    ctx.canvas.width = size;
-    ctx.canvas.height = size;
+function paintRow(prefix, mri, mask) {
+    draw(document.getElementById(`${prefix}-mri`), mri, null, 'mri');
+    draw(document.getElementById(`${prefix}-mask`), null, mask, 'mask');
+    draw(document.getElementById(`${prefix}-over`), mri, mask, 'over');
+}
+
+function draw(canvas, mri, mask, mode) {
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    // AUTO-AJUSTE DE TAMAÑO INTERNO
+    const size = mri ? mri.length : (mask ? mask.length : 64);
+    canvas.width = size;
+    canvas.height = size;
 
     const imgData = ctx.createImageData(size, size);
-    const pixels = imgData.data;
+    const px = imgData.data;
 
-    for (let y = 0; y < size; y++) {
-        for (let x = 0; x < size; x++) {
-            const i = (y * size + x) * 4;
-            let gray = 0; let maskVal = 0;
+    for(let y=0; y<size; y++) {
+        for(let x=0; x<size; x++) {
+            const i = (y*size + x) * 4;
+            let g = 0, m = 0;
 
-            // Extracción segura de datos
-            if (mriData && mriData[y]) {
-                gray = Array.isArray(mriData[y][x]) ? mriData[y][x][0] : mriData[y][x];
-            }
-            if (maskData && maskData[y]) maskVal = maskData[y][x];
+            if(mri && mri[y]) g = Array.isArray(mri[y][x]) ? mri[y][x][0] : mri[y][x];
+            if(mask && mask[y]) m = mask[y][x];
 
-            if (mode === 'mri') {
-                pixels[i] = gray; pixels[i+1] = gray; pixels[i+2] = gray; pixels[i+3] = 255;
+            if(mode === 'mri') {
+                px[i]=g; px[i+1]=g; px[i+2]=g; px[i+3]=255;
             } else if (mode === 'mask') {
-                const val = maskVal > 127 ? 255 : 0;
-                pixels[i] = val; pixels[i+1] = val; pixels[i+2] = val; pixels[i+3] = 255;
-            } else if (mode === 'overlay') {
-                if (maskVal > 127) {
-                    pixels[i] = 255; pixels[i+1] = 0; pixels[i+2] = 0; pixels[i+3] = 255;
+                const v = m > 127 ? 255 : 0;
+                px[i]=v; px[i+1]=v; px[i+2]=v; px[i+3]=255;
+            } else { // overlay
+                if(m > 127) {
+                    px[i]=255; px[i+1]=0; px[i+2]=0; px[i+3]=255;
                 } else {
-                    pixels[i] = gray; pixels[i+1] = gray; pixels[i+2] = gray; pixels[i+3] = 255;
+                    px[i]=g; px[i+1]=g; px[i+2]=g; px[i+3]=255;
                 }
             }
         }
     }
     ctx.putImageData(imgData, 0, 0);
-}
-
-function showLoading() {
-    loading.classList.remove('hidden');
-    resultsArea.classList.add('hidden');
-    errorMsg.classList.add('hidden');
-}
-function showError(msg) {
-    loading.classList.add('hidden');
-    errorMsg.classList.remove('hidden');
-    errorMsg.textContent = msg;
 }
