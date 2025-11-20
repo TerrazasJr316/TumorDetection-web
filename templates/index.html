@@ -1,62 +1,94 @@
-{% load static %} <!DOCTYPE html>
+{% load static %}
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detección de Tumores MRI</title>
+    <title>Sistema de Detección de Tumores MRI</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
 
     <header>
         <h1>Detección de Tumores por MRI</h1>
-        <p>ResNet50 vs AlexNet</p>
+        <p>Análisis Multi-Modelo: ResNet50 | AlexNet | ResNet55</p>
     </header>
 
     <div class="search-container">
-        <input type="number" id="image-id-input" placeholder="Ingresa ID (0 - 3928)" min="0" max="3928">
-        <button id="btn-search">Analizar MRI</button>
-        <button id="btn-random" class="secondary">Aleatorio</button>
+        <input type="number" id="image-id-input" placeholder="ID (0 - 3928)" min="0" max="3928">
+        <button id="btn-search">🔍 Analizar MRI</button>
+        <button id="btn-random" class="secondary">🎲 Aleatorio</button>
     </div>
 
-    <div id="loading" class="hidden">Cargando análisis...</div>
+    <h2 id="patient-info" class="hidden">Paciente: --</h2>
+    <div id="loading" class="hidden">Procesando con 3 modelos...</div>
     <div id="error-msg" class="hidden"></div>
 
     <div id="results-area" class="hidden">
         
-        <div class="patient-info">
-            <h2 id="patient-id-display">Toma: --</h2>
-            <div class="predictions">
-                <span id="pred-resnet">ResNet50: --%</span>
-                <span id="pred-alexnet">AlexNet: --%</span>
+        <div class="model-row">
+            <div class="model-header">
+                <span class="model-name">ResNet50</span>
+                <span class="model-acc" id="acc-resnet50">Prob: --%</span>
             </div>
-        </div>
             <div class="tomas-grid">
                 <div class="toma-card">
-                    <h3>1. Vista General</h3>
-                    <div class="canvas-container">
-                        <canvas id="canvas-mri"></canvas>
-                    </div>
-                    <p>MRI Original</p>
+                    <h3>Vista General</h3>
+                    <canvas id="c-r50-mri"></canvas>
                 </div>
-            
                 <div class="toma-card">
-                    <h3>2. Segmentación</h3>
-                    <div class="canvas-container">
-                        <canvas id="canvas-mask"></canvas>
-                    </div>
-                    <p>Tumor Detectado</p>
+                    <h3>Segmentación</h3>
+                    <canvas id="c-r50-mask"></canvas>
                 </div>
-            
                 <div class="toma-card">
-                    <h3>3. Diagnóstico Visual</h3>
-                    <div class="canvas-container">
-                        <canvas id="canvas-overlay"></canvas>
-                    </div>
-                    <p>MRI + Tumor</p>
+                    <h3>Diagnóstico</h3>
+                    <canvas id="c-r50-overlay"></canvas>
                 </div>
             </div>
         </div>
+
+        <div class="model-row">
+            <div class="model-header">
+                <span class="model-name">AlexNet</span>
+                <span class="model-acc" id="acc-alexnet">Prob: --%</span>
+            </div>
+            <div class="tomas-grid">
+                <div class="toma-card">
+                    <h3>Vista General</h3>
+                    <canvas id="c-alex-mri"></canvas>
+                </div>
+                <div class="toma-card">
+                    <h3>Segmentación</h3>
+                    <canvas id="c-alex-mask"></canvas>
+                </div>
+                <div class="toma-card">
+                    <h3>Diagnóstico</h3>
+                    <canvas id="c-alex-overlay"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="model-row">
+            <div class="model-header">
+                <span class="model-name">ResNet18</span>
+                <span class="model-acc" id="acc-resnet18">Prob: --%</span>
+            </div>
+            <div class="tomas-grid">
+                <div class="toma-card">
+                    <h3>Vista General</h3>
+                    <canvas id="c-r18-mri"></canvas>
+                </div>
+                <div class="toma-card">
+                    <h3>Segmentación</h3>
+                    <canvas id="c-r18-mask"></canvas>
+                </div>
+                <div class="toma-card">
+                    <h3>Diagnóstico</h3>
+                    <canvas id="c-r18-overlay"></canvas>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script src="{% static 'app.js' %}"></script>
