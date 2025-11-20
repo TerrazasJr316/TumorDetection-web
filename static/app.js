@@ -78,9 +78,8 @@ function drawToCanvas(ctx, mriData, maskData, mode) {
     // Esto elimina el espacio blanco sobrante. La imagen llenará todo el buffer.
     ctx.canvas.width = size;
     ctx.canvas.height = size;
-
     // 3. Dibujar los datos (esto ya lo tenías, pero ahora llenará el canvas)
-    const imgData = ctx.createImageData(size, size);
+    const imgData = ctx.createImageData(size*5, size*3);
     const pixels = imgData.data;
 
     for (let y = 0; y < size; y++) {
