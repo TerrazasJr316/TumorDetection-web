@@ -1,38 +1,82 @@
-/* ... (Tu CSS anterior) ... */
-
-/* Estilos nuevos para las filas de modelos */
-.model-row {
-    background: #ffffff;
-    border-radius: 15px;
+/* Reset y Base */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background-color: #f0f2f5;
+    color: #1c1e21;
     padding: 20px;
-    margin-bottom: 40px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+header { text-align: center; margin-bottom: 30px; }
+header h1 { color: #1877f2; margin-bottom: 5px; }
+
+/* Controles */
+.search-container { margin-bottom: 30px; display: flex; gap: 10px; }
+input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
+button { padding: 10px 20px; background: #1877f2; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+button:hover { background: #166fe5; }
+.secondary { background: #4b4c4f; }
+
+/* Estructura de Modelos (LAS FILAS) */
+.model-section {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 25px;
+    margin-bottom: 30px; /* Separación entre modelos */
     width: 100%;
-    max-width: 1200px;
+    max-width: 1000px;
+    border-left: 6px solid #1877f2; /* Borde decorativo */
 }
 
 .model-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 15px;
     margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
 }
 
-.model-name {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: var(--primary);
+.model-title { font-size: 1.5rem; font-weight: bold; color: #333; }
+.model-score { 
+    font-size: 1.2rem; 
+    font-weight: bold; 
+    color: #2e7d32; /* Verde éxito */
+    background: #e8f5e9; 
+    padding: 5px 15px; 
+    border-radius: 20px; 
 }
 
-.model-acc {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--accent);
-    background: #e8f6f3;
-    padding: 5px 15px;
-    border-radius: 20px;
+/* Contenedor de las 3 tarjetas */
+.cards-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
+/* Tarjetas individuales */
+.toma-card {
+    flex: 1;
+    min-width: 250px;
+    text-align: center;
+}
+.toma-card h4 { margin-bottom: 10px; color: #555; }
+
+/* EL LIENZO GRANDE */
+canvas {
+    width: 100%;
+    aspect-ratio: 1/1;
+    background: #000;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    image-rendering: pixelated; /* Clave para la nitidez */
+}
+
+/* Utilidades */
 .hidden { display: none; }
+#error-msg { color: red; font-weight: bold; margin: 20px 0; }

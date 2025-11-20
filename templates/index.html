@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Detección de Tumores MRI</title>
+    <title>Detección de Tumores - Multi-Modelo</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
@@ -15,75 +15,75 @@
     </header>
 
     <div class="search-container">
-        <input type="number" id="image-id-input" placeholder="ID (0 - 3928)" min="0" max="3928">
+        <input type="number" id="image-id-input" placeholder="Ej: 623" min="0" max="3928">
         <button id="btn-search">Analizar MRI</button>
         <button id="btn-random" class="secondary">Aleatorio</button>
     </div>
 
     <h2 id="patient-info" class="hidden">Paciente: --</h2>
-    <div id="loading" class="hidden">Procesando con 3 modelos...</div>
+    <div id="loading" class="hidden">Cargando predicciones...</div>
     <div id="error-msg" class="hidden"></div>
 
     <div id="results-area" class="hidden">
-        
-        <div class="model-row">
+
+        <div class="model-section">
             <div class="model-header">
-                <span class="model-name">ResNet50</span>
-                <span class="model-acc" id="acc-resnet50">Prob: --%</span>
+                <span class="model-title">ResNet50</span>
+                <span class="model-score" id="acc-resnet50">Prob: --%</span>
             </div>
-            <div class="tomas-grid">
+            <div class="cards-container">
                 <div class="toma-card">
-                    <h3>Vista General</h3>
+                    <h4>Vista General</h4>
                     <canvas id="c-r50-mri"></canvas>
                 </div>
                 <div class="toma-card">
-                    <h3>Segmentación</h3>
+                    <h4>Segmentación</h4>
                     <canvas id="c-r50-mask"></canvas>
                 </div>
                 <div class="toma-card">
-                    <h3>Diagnóstico</h3>
+                    <h4>Diagnóstico</h4>
                     <canvas id="c-r50-overlay"></canvas>
                 </div>
             </div>
         </div>
 
-        <div class="model-row">
+        <div class="model-section">
             <div class="model-header">
-                <span class="model-name">AlexNet</span>
-                <span class="model-acc" id="acc-alexnet">Prob: --%</span>
+                <span class="model-title">AlexNet</span>
+                <span class="model-score" id="acc-alexnet">Prob: --%</span>
             </div>
-            <div class="tomas-grid">
+            <div class="cards-container">
                 <div class="toma-card">
-                    <h3>Vista General</h3>
+                    <h4>Vista General</h4>
                     <canvas id="c-alex-mri"></canvas>
                 </div>
                 <div class="toma-card">
-                    <h3>Segmentación</h3>
+                    <h4>Segmentación</h4>
                     <canvas id="c-alex-mask"></canvas>
                 </div>
                 <div class="toma-card">
-                    <h3>Diagnóstico</h3>
+                    <h4>Diagnóstico</h4>
                     <canvas id="c-alex-overlay"></canvas>
                 </div>
             </div>
         </div>
 
-        <div class="model-row">
+        <div class="model-section">
             <div class="model-header">
-                <span class="model-name">ResNet18</span>
-                <span class="model-acc" id="acc-resnet18">Prob: --%</span>
+                <span class="model-title">ResNet18</span>
+                <span class="model-score" id="acc-resnet18">Prob: --%</span>
             </div>
-            <div class="tomas-grid">
+            <div class="cards-container">
                 <div class="toma-card">
-                    <h3>Vista General</h3>
+                    <h4>Vista General</h4>
                     <canvas id="c-r18-mri"></canvas>
                 </div>
                 <div class="toma-card">
-                    <h3>Segmentación</h3>
+                    <h4>Segmentación</h4>
                     <canvas id="c-r18-mask"></canvas>
                 </div>
                 <div class="toma-card">
-                    <h3>Diagnóstico</h3>
+                    <h4>Diagnóstico</h4>
                     <canvas id="c-r18-overlay"></canvas>
                 </div>
             </div>
