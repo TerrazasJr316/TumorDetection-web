@@ -4,23 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detección de Tumores - Comparativa</title>
+    <title>Tumor Detection - Final</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
 
     <header>
         <h1>Detección de Tumores por MRI</h1>
-        <p>Análisis Comparativo: ResNet50 vs AlexNet vs ResNet18</p>
+        <p>Comparativa: ResNet50 vs AlexNet vs ResNet18</p>
     </header>
 
     <div class="controls">
-        <input type="number" id="inp-id" placeholder="ID (Ej: 623)" min="0" max="3928">
-        <button id="btn-run">Analizar MRI</button>
-        <button id="btn-rand" class="secondary">Aleatorio</button>
+        <input type="number" id="image-id-input" placeholder="ID (Ej: 623)" min="0" max="3928">
+        <button id="btn-search">🔍 Analizar MRI</button>
+        <button id="btn-random" class="secondary">🎲 Aleatorio</button>
     </div>
 
-    <div id="status-msg" class="hidden">Cargando...</div>
+    <div id="status-msg" class="hidden">Cargando análisis...</div>
     <div id="error-box" class="hidden"></div>
     <h2 id="patient-lbl" class="hidden">Paciente: --</h2>
 

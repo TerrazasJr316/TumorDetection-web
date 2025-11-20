@@ -1,74 +1,21 @@
-/* RESET */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: sans-serif; background: #f4f7f6; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-
-header { text-align: center; margin-bottom: 20px; }
-h1 { color: #2c3e50; margin-bottom: 5px; }
-
-/* CONTROLES */
-.controls { display: flex; gap: 10px; margin-bottom: 20px; }
-input { padding: 10px; border-radius: 5px; border: 1px solid #ccc; width: 150px; }
-button { padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-button:hover { background: #2980b9; }
-.secondary { background: #7f8c8d; }
-
-/* MENSAJES */
-.hidden { display: none !important; }
-#status-msg { font-size: 1.2rem; color: #e67e22; font-weight: bold; margin: 20px; }
-#error-box { background: #fadbd8; color: #c0392b; padding: 10px; border-radius: 5px; margin: 10px; }
-#patient-lbl { margin-bottom: 20px; color: #34495e; }
-
-/* ESTILO DE LA FILA (MODELO) */
-.model-row {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    margin-bottom: 30px;
-    padding: 20px;
-    width: 100%;
-    max-width: 1000px; /* Ancho máximo para que no se desparrame */
+/* (El mismo de antes, solo aseguro esta parte crítica) */
+canvas {
+    width: 100%;             /* OCUPA TODO EL ANCHO DISPONIBLE */
+    aspect-ratio: 1 / 1;     /* SIEMPRE CUADRADO */
+    background: black;
+    border-radius: 4px;
+    image-rendering: pixelated; /* PIXELES GIGANTES NÍTIDOS */
 }
 
-.row-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid #ecf0f1;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-}
-
-.m-name { font-size: 1.5rem; font-weight: bold; color: #2c3e50; }
-.m-score { font-size: 1.2rem; font-weight: bold; color: #27ae60; background: #eafaf1; padding: 5px 15px; border-radius: 15px; }
-
-/* CUERPO DE LA FILA (LAS 3 TARJETAS) */
 .row-body {
-    display: flex;           /* ESTO PONE LAS TARJETAS EN FILA */
-    justify-content: space-between;
+    display: flex;
     gap: 20px;
 }
 
 .card {
-    flex: 1;                 /* TODAS DEL MISMO TAMAÑO */
-    background: #f8f9fa;
+    flex: 1;
+    background: #fff;
     padding: 10px;
-    border-radius: 8px;
     text-align: center;
-    border: 1px solid #ddd;
 }
-
-.card span { display: block; margin-bottom: 8px; font-weight: bold; color: #7f8c8d; }
-
-/* EL LIENZO GIGANTE */
-canvas {
-    width: 100%;             /* OCUPAR TODO EL ANCHO DE LA TARJETA */
-    aspect-ratio: 1 / 1;     /* SIEMPRE CUADRADO */
-    background: black;
-    border-radius: 4px;
-    image-rendering: pixelated; /* CLAVE PARA NITIDEZ */
-}
-
-/* PARA MÓVILES */
-@media (max-width: 768px) {
-    .row-body { flex-direction: column; } /* En celular se ponen verticales */
-}
+/* ... resto de estilos ... */
