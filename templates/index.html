@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Detección de Tumores MRI</title>
+    <title>Detección de Tumores MRI</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
 
     <header>
         <h1>Detección de Tumores por MRI</h1>
-        <p>Comparativa ResNet50 vs AlexNet</p>
+        <p>ResNet50 vs AlexNet</p>
     </header>
 
     <div class="search-container">
         <input type="number" id="image-id-input" placeholder="Ingresa ID (0 - 3928)" min="0" max="3928">
-        <button id="btn-search">🔍 Analizar MRI</button>
-        <button id="btn-random" class="secondary">🎲 Aleatorio</button>
+        <button id="btn-search">Analizar MRI</button>
+        <button id="btn-random" class="secondary">Aleatorio</button>
     </div>
 
     <div id="loading" class="hidden">Cargando análisis...</div>
@@ -25,7 +25,7 @@
     <div id="results-area" class="hidden">
         
         <div class="patient-info">
-            <h2 id="patient-id-display">Paciente: --</h2>
+            <h2 id="patient-id-display">Toma: --</h2>
             <div class="predictions">
                 <span id="pred-resnet">ResNet50: --%</span>
                 <span id="pred-alexnet">AlexNet: --%</span>
@@ -35,17 +35,17 @@
         <div class="tomas-grid">
             <div class="toma-card">
                 <h3>1. Vista General</h3>
-                <canvas id="canvas-mri"></canvas> <p>MRI Original (T1-Weighted)</p>
+                <canvas id="canvas-mri"></canvas> <p>MRI Original</p>
             </div>
 
             <div class="toma-card">
                 <h3>2. Segmentación</h3>
-                <canvas id="canvas-mask"></canvas> <p>Máscara del Tumor Detectado</p>
+                <canvas id="canvas-mask"></canvas> <p>Tumor Detectado</p>
             </div>
 
             <div class="toma-card">
                 <h3>3. Diagnóstico Visual</h3>
-                <canvas id="canvas-overlay"></canvas> <p>MRI + Tumor (Rojo)</p>
+                <canvas id="canvas-overlay"></canvas> <p>MRI + Tumor</p>
             </div>
         </div>
     </div>
