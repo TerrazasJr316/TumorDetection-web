@@ -1,105 +1,119 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("APP INICIADA CORRECTAMENTE"); // Mira la consola (F12) para ver esto
+    console.log("--- SISTEMA INICIADO ---");
 
     const API_URL = window.location.origin;
 
-    // IDs sincronizados con el HTML de arriba
+    // 1. CAPTURA DE ELEMENTOS (IDs EXACTOS DEL ÚLTIMO HTML)
     const inpId = document.getElementById('image-id-input');
     const btnSearch = document.getElementById('btn-search');
     const btnRandom = document.getElementById('btn-random');
     
-    const mainDiv = document.getElementById('main-results');
+    // Contenedores de estado (Nombres nuevos)
     const statusMsg = document.getElementById('status-msg');
     const errorBox = document.getElementById('error-box');
     const patLbl = document.getElementById('patient-lbl');
+    const mainResults = document.getElementById('main-results');
 
-    // Verificación de seguridad
-    if (!btnSearch || !btnRandom) {
-        console.error("ERROR CRÍTICO: No se encontraron los botones en el HTML");
+    // 2. VERIFICACIÓN DE SEGURIDAD
+    if (!btnSearch || !statusMsg) {
+        console.error("ERROR CRÍTICO: IDs de HTML no coinciden con JS. Revisa tu index.html");
         return;
     }
 
-    // --- EVENT LISTENERS ---
+    // 3. LISTENERS (BOTONES)
     btnSearch.addEventListener('click', () => {
-        console.log("Click en Buscar");
         const id = inpId.value;
-        if(!id) return alert("Por favor ingresa un ID válido");
+        if(!id) return alert("Por favor, escribe un número de ID.");
         loadData(`/api/image/index/${id}/`);
     });
 
     btnRandom.addEventListener('click', () => {
-        console.log("Click en Aleatorio");
         loadData(`/api/images/random/1/`);
     });
 
-    // --- FUNCIÓN DE CARGA ---
-    async function loadData(url) {
-        // Resetear interfaz
-        statusMsg.classList.remove('hidden');
-        mainDiv.classList.add('hidden');
-        errorBox.classList.add('hidden');
-        patLbl.classList.add('hidden');
+    // 4. FUNCIÓN PRINCIPAL DE CARGA
+    async function loadData(endpoint) {
+        // Reseteamos la interfaz (Ocultar todo, mostrar cargando)
+        if(statusMsg) statusMsg.classList.remove('hidden');
+        if(mainResults) mainResults.classList.add('hidden');
+        if(errorBox) errorBox.classList.add('hidden');
+        if(patLbl) patLbl.classList.add('hidden');
 
         try {
-            const res = await fetch(`${API_URL}${url}`);
-            if(!res.ok) throw new Error("Error al conectar con la API (o ID inválido)");
+            console.log(`Consultando: ${API_URL}${endpoint}`);
+            const res = await fetch(`${API_URL}${endpoint}`);
+            
+            if(!res.ok) throw new Error(`Error ${res.status}: No se encontró la imagen o falló la red.`);
             
             let data = await res.json();
             if(Array.isArray(data)) data = data[0];
 
-            display(data);
+            displayResults(data);
+
         } catch (e) {
             console.error(e);
-            statusMsg.classList.add('hidden');
-            errorBox.textContent = "Error: " + e.message;
-            errorBox.classList.remove('hidden');
+            if(statusMsg) statusMsg.classList.add('hidden');
+            if(errorBox) {
+                errorBox.textContent = e.message;
+                errorBox.classList.remove('hidden');
+            }
         }
     }
 
-    // --- FUNCIÓN DE PINTADO ---
-    function display(data) {
-        statusMsg.classList.add('hidden');
-        mainDiv.classList.remove('hidden');
-        patLbl.classList.remove('hidden');
-        patLbl.textContent = `Paciente: ${data.patient_id}`;
+    // 5. FUNCIÓN DE PINTADO (RENDER)
+    function displayResults(data) {
+        // Ocultar carga, mostrar resultados
+        if(statusMsg) statusMsg.classList.add('hidden');
+        if(mainResults) mainResults.classList.remove('hidden');
+        if(patLbl) {
+            patLbl.classList.remove('hidden');
+            patLbl.textContent = `Paciente: ${data.patient_id || 'Desconocido'}`;
+        }
 
-        // 1. Scores
-        setScore('score-r50', data.prediction_resnet50);
-        setScore('score-alex', data.prediction_alexnet);
-        setScore('score-r18', data.prediction_resnet18);
+        // --- PINTAR SCORES ---
+        updateScore('score-r50', data.prediction_resnet50);
+        updateScore('score-alex', data.prediction_alexnet);
+        updateScore('score-r18', data.prediction_resnet18);
 
-        // 2. Imágenes (Reutilizamos los datos visuales)
+        // --- PINTAR IMÁGENES ---
+        // Usamos los IDs de canvas definidos en el HTML (cv-r50-mri, etc.)
         paintRow('cv-r50', data.mri_image_64x64, data.mask_image_64x64);
         paintRow('cv-alex', data.mri_image_64x64, data.mask_image_64x64);
         paintRow('cv-r18', data.mri_image_64x64, data.mask_image_64x64);
     }
 
-    function setScore(elemId, predObj) {
-        const el = document.getElementById(elemId);
+    // Helper para actualizar textos de porcentaje
+    function updateScore(elementId, predictionData) {
+        const el = document.getElementById(elementId);
         if(!el) return;
-        
-        if(predObj) {
-            const pct = (predObj['1'] * 100).toFixed(2);
-            el.textContent = `${pct}% Tumor`;
-            el.style.color = pct > 50 ? '#c0392b' : '#27ae60';
+
+        if(predictionData) {
+            const percent = (predictionData['1'] * 100).toFixed(2);
+            el.textContent = `${percent}% Tumor`;
+            // Color dinámico: Rojo si es alto, Verde si es bajo
+            el.style.color = percent > 50 ? '#c0392b' : '#27ae60';
         } else {
             el.textContent = "Pendiente...";
             el.style.color = '#f39c12';
         }
     }
 
-    function paintRow(prefix, mri, mask) {
-        draw(document.getElementById(`${prefix}-mri`), mri, null, 'mri');
-        draw(document.getElementById(`${prefix}-mask`), null, mask, 'mask');
-        draw(document.getElementById(`${prefix}-over`), mri, mask, 'over');
+    // Helper para pintar una fila de 3 canvas
+    function paintRow(prefix, mriData, maskData) {
+        drawOnCanvas(document.getElementById(`${prefix}-mri`), mriData, null, 'mri');
+        drawOnCanvas(document.getElementById(`${prefix}-mask`), null, maskData, 'mask');
+        drawOnCanvas(document.getElementById(`${prefix}-over`), mriData, maskData, 'over');
     }
 
-    function draw(canvas, mri, mask, mode) {
+    // Lógica de dibujo en Canvas (Ajuste de tamaño automático)
+    function drawOnCanvas(canvas, mri, mask, mode) {
         if(!canvas) return;
         const ctx = canvas.getContext('2d');
 
-        // TRUCO DE ESCALADO: Ajustar resolución interna a los datos
+        // Detectar tamaño real (64, 96, o 128)
         const size = mri ? mri.length : (mask ? mask.length : 64);
+        
+        // Ajustar resolución interna
         canvas.width = size;
         canvas.height = size;
 
@@ -111,19 +125,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 const i = (y*size + x) * 4;
                 let g = 0, m = 0;
 
+                // Lectura segura de datos
                 if(mri && mri[y]) g = Array.isArray(mri[y][x]) ? mri[y][x][0] : mri[y][x];
                 if(mask && mask[y]) m = mask[y][x];
 
+                // Lógica de píxeles
                 if(mode === 'mri') {
                     px[i]=g; px[i+1]=g; px[i+2]=g; px[i+3]=255;
                 } else if (mode === 'mask') {
-                    const v = m > 127 ? 255 : 0;
-                    px[i]=v; px[i+1]=v; px[i+2]=v; px[i+3]=255;
-                } else {
+                    const val = m > 127 ? 255 : 0;
+                    px[i]=val; px[i+1]=val; px[i+2]=val; px[i+3]=255;
+                } else { // Overlay
                     if(m > 127) {
-                        px[i]=255; px[i+1]=0; px[i+2]=0; px[i+3]=255;
+                        px[i]=255; px[i+1]=0; px[i+2]=0; px[i+3]=255; // Rojo
                     } else {
-                        px[i]=g; px[i+1]=g; px[i+2]=g; px[i+3]=255;
+                        px[i]=g; px[i+1]=g; px[i+2]=g; px[i+3]=255; // MRI Fondo
                     }
                 }
             }
