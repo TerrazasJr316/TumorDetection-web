@@ -71,37 +71,32 @@ function renderTomas(data) {
 }
 
 function drawToCanvas(ctx, mriData, maskData, mode) {
-    // Tamaño de destino fijo (más grande)
-    const targetSize = 400;
+    console.log(`Dibujando en modo: ${mode}`);
     
-    // Tamaño original de los datos
-    const originalSize = mriData ? mriData.length : (maskData ? maskData.length : 64);
+    // Tamaño fijo grande
+    const CANVAS_SIZE = 400;
     
-    // Configurar el canvas con el tamaño grande
-    ctx.canvas.width = targetSize;
-    ctx.canvas.height = targetSize;
+    // Configurar canvas
+    ctx.canvas.width = CANVAS_SIZE;
+    ctx.canvas.height = CANVAS_SIZE;
+    
+    console.log(`Canvas configurado a: ${CANVAS_SIZE}x${CANVAS_SIZE}`);
+    
+    // Tamaño de datos
+    const dataSize = mriData ? mriData.length : (maskData ? maskData.length : 64);
+    console.log(`Tamaño de datos: ${dataSize}x${dataSize}`);
     
     // Factor de escala
-    const scale = targetSize / originalSize;
+    const scale = CANVAS_SIZE / dataSize;
+    console.log(`Factor de escala: ${scale}`);
     
-    // Crear imagen temporal con el tamaño original
-    const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = originalSize;
-    tempCanvas.height = originalSize;
-    const tempCtx = tempCanvas.getContext('2d');
-    
-    // Dibujar los datos en el canvas temporal
-    const imgData = tempCtx.createImageData(originalSize, originalSize);
-    const pixels = imgData.data;
-
-    for (let y = 0; y < originalSize; y++) {
-        for (let x = 0; x < originalSize; x++) {
-            const i = (y * originalSize + x) * 4;
-            
+    // Dibujar directamente pixel por pixel escalado
+    for (let y = 0; y < dataSize; y++) {
+        for (let x = 0; x < dataSize; x++) {
             let gray = 0;
             let maskVal = 0;
 
-            // Obtener valores de forma segura
+            // Obtener valores
             if (mriData && mriData[y] && mriData[y][x] !== undefined) {
                 gray = Array.isArray(mriData[y][x]) ? mriData[y][x][0] : mriData[y][x];
             }
@@ -109,28 +104,30 @@ function drawToCanvas(ctx, mriData, maskData, mode) {
                 maskVal = maskData[y][x];
             }
 
-            // Lógica de coloreado
+            let r, g, b;
+            
             if (mode === 'mri') {
-                pixels[i] = gray; pixels[i+1] = gray; pixels[i+2] = gray; pixels[i+3] = 255;
+                r = g = b = gray;
             } 
             else if (mode === 'mask') {
                 const val = maskVal > 127 ? 255 : 0;
-                pixels[i] = val; pixels[i+1] = val; pixels[i+2] = val; pixels[i+3] = 255;
+                r = g = b = val;
             } 
             else if (mode === 'overlay') {
                 if (maskVal > 127) {
-                    pixels[i] = 255; pixels[i+1] = 0; pixels[i+2] = 0; pixels[i+3] = 255;
+                    r = 255; g = 0; b = 0;
                 } else {
-                    pixels[i] = gray; pixels[i+1] = gray; pixels[i+2] = gray; pixels[i+3] = 255;
+                    r = g = b = gray;
                 }
             }
+
+            // Dibujar píxel escalado
+            ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+            ctx.fillRect(x * scale, y * scale, scale, scale);
         }
     }
-    tempCtx.putImageData(imgData, 0, 0);
     
-    // Escalar al tamaño grande manteniendo píxeles definidos
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(tempCanvas, 0, 0, originalSize, originalSize, 0, 0, targetSize, targetSize);
+    console.log(`Dibujo completado para modo: ${mode}`);
 }
 
 // Manejo de errores y carga
