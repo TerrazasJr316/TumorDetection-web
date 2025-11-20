@@ -31,21 +31,30 @@
                 <span id="pred-alexnet">AlexNet: --%</span>
             </div>
         </div>
-
-        <div class="tomas-grid">
-            <div class="toma-card">
-                <h3>1. Vista General</h3>
-                <canvas id="canvas-mri"></canvas> <p>MRI Original</p>
-            </div>
-
-            <div class="toma-card">
-                <h3>2. Segmentación</h3>
-                <canvas id="canvas-mask"></canvas> <p>Tumor Detectado</p>
-            </div>
-
-            <div class="toma-card">
-                <h3>3. Diagnóstico Visual</h3>
-                <canvas id="canvas-overlay"></canvas> <p>MRI + Tumor</p>
+            <div class="tomas-grid">
+                <div class="toma-card">
+                    <h3>1. Vista General</h3>
+                    <div class="canvas-container">
+                        <canvas id="canvas-mri"></canvas>
+                    </div>
+                    <p>MRI Original</p>
+                </div>
+            
+                <div class="toma-card">
+                    <h3>2. Segmentación</h3>
+                    <div class="canvas-container">
+                        <canvas id="canvas-mask"></canvas>
+                    </div>
+                    <p>Tumor Detectado</p>
+                </div>
+            
+                <div class="toma-card">
+                    <h3>3. Diagnóstico Visual</h3>
+                    <div class="canvas-container">
+                        <canvas id="canvas-overlay"></canvas>
+                    </div>
+                    <p>MRI + Tumor</p>
+                </div>
             </div>
         </div>
     </div>
