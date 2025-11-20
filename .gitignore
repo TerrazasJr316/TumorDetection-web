@@ -14,3 +14,4 @@ requirements_loader.txt
 requirements_local_training.txt
 requirements_preprocessing.txt.txt
 train_and_save_artifacts.py
+patch_resnet18.py
