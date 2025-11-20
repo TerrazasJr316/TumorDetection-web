@@ -71,22 +71,32 @@ function renderTomas(data) {
 }
 
 function drawToCanvas(ctx, mriData, maskData, mode) {
-    // 1. Detectar tamaño REAL de los datos (64, 96, 128...)
-    const size = mriData ? mriData.length : (maskData ? maskData.length : 64);
+    // Tamaño de destino fijo (más grande)
+    const targetSize = 400;
     
-    // 2. Crear canvas interno con el tamaño real de los datos
+    // Tamaño original de los datos
+    const originalSize = mriData ? mriData.length : (maskData ? maskData.length : 64);
+    
+    // Configurar el canvas con el tamaño grande
+    ctx.canvas.width = targetSize;
+    ctx.canvas.height = targetSize;
+    
+    // Factor de escala
+    const scale = targetSize / originalSize;
+    
+    // Crear imagen temporal con el tamaño original
     const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = size;
-    tempCanvas.height = size;
+    tempCanvas.width = originalSize;
+    tempCanvas.height = originalSize;
     const tempCtx = tempCanvas.getContext('2d');
     
-    // 3. Dibujar los datos en el canvas temporal
-    const imgData = tempCtx.createImageData(size, size);
+    // Dibujar los datos en el canvas temporal
+    const imgData = tempCtx.createImageData(originalSize, originalSize);
     const pixels = imgData.data;
 
-    for (let y = 0; y < size; y++) {
-        for (let x = 0; x < size; x++) {
-            const i = (y * size + x) * 4;
+    for (let y = 0; y < originalSize; y++) {
+        for (let x = 0; x < originalSize; x++) {
+            const i = (y * originalSize + x) * 4;
             
             let gray = 0;
             let maskVal = 0;
@@ -118,30 +128,9 @@ function drawToCanvas(ctx, mriData, maskData, mode) {
     }
     tempCtx.putImageData(imgData, 0, 0);
     
-    // 4. ESCALAR al tamaño del canvas real manteniendo relación de aspecto
-    const container = ctx.canvas.parentElement;
-    const containerWidth = container.clientWidth;
-    const containerHeight = container.clientHeight;
-    
-    // Configurar el canvas principal para que coincida con el tamaño del contenedor
-    ctx.canvas.width = containerWidth;
-    ctx.canvas.height = containerHeight;
-    
-    // Limpiar el canvas
-    ctx.clearRect(0, 0, containerWidth, containerHeight);
-    
-    // Calcular el escalado para que la imagen ocupe el máximo espacio posible
-    const scale = Math.min(containerWidth / size, containerHeight / size);
-    const scaledWidth = size * scale;
-    const scaledHeight = size * scale;
-    
-    // Centrar la imagen en el contenedor
-    const x = (containerWidth - scaledWidth) / 2;
-    const y = (containerHeight - scaledHeight) / 2;
-    
-    // Dibujar la imagen escalada
+    // Escalar al tamaño grande manteniendo píxeles definidos
     ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(tempCanvas, 0, 0, size, size, x, y, scaledWidth, scaledHeight);
+    ctx.drawImage(tempCanvas, 0, 0, originalSize, originalSize, 0, 0, targetSize, targetSize);
 }
 
 // Manejo de errores y carga
