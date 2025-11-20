@@ -72,7 +72,7 @@ function renderTomas(data) {
 
 function drawToCanvas(ctx, mriData, maskData, mode) {
     // 1. Detectar tamaño REAL de los datos (64, 96, 128...)
-    const size = mriData ? mriData.length : (maskData ? maskData.length : 128);
+    const size = mriData ? mriData.length : (maskData ? maskData.length : 64);
     
     // 2. Crear canvas interno con el tamaño real de los datos
     const tempCanvas = document.createElement('canvas');
