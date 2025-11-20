@@ -46,7 +46,7 @@ function renderTomas(data) {
     resultsArea.classList.remove('hidden');
 
     // Datos del paciente y predicciones
-    document.getElementById('patient-id-display').textContent = `Paciente: ${data.patient_id}`;
+    document.getElementById('patient-id-display').textContent = `Toma: ${data.patient_id}`;
     
     // Convertir probabilidad a porcentaje
     const resnetVal = (data.prediction_resnet50['1'] * 100).toFixed(2);
@@ -85,7 +85,7 @@ function drawToCanvas(ctx, mriData, maskData, mode) {
 
     for (let y = 0; y < size; y++) {
         for (let x = 0; x < size; x++) {
-            const i = (y * size + x) * 4;
+            const i = (y * size + x) * 8;
             
             let gray = 0;
             let maskVal = 0;
